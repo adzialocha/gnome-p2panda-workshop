@@ -1,0 +1,6 @@
+[bookmarks]
+description = "Write about your schema here"
+
+[bookmarks.fields]
+url = { type = "str" }
+description = { type = "str" }

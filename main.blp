@@ -1,0 +1,132 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.StatusPage {
+  title: _("Local-first Bookmarking App");
+  description: _("Write something about it!");
+  valign: start;
+
+  Adw.Clamp {
+    maximum-size: 640;
+
+    Box {
+      orientation: vertical;
+      spacing: 24;
+
+      StackSwitcher {
+        stack: stack;
+        halign: center;
+      }
+
+      Stack stack {
+        vexpand: true;
+        vhomogeneous: false;
+
+        StackPage {
+          title: _("Bookmarks");
+
+          child: Box {
+            orientation: horizontal;
+            halign: center;
+
+            Box {
+              halign: center;
+
+              styles [
+                "linked"
+              ]
+
+              SearchEntry search {
+                placeholder-text: _("Start searching");
+              }
+
+              Button refresh {
+                icon-name: "refresh-symbolic";
+                tooltip-text: _("Add Item");
+              }
+            }
+
+            ListView bookmarks {
+              hexpand: true;
+              valign: start;
+              enable-rubberband: true;
+
+              factory: BuilderListItemFactory {
+                template ListItem {
+                  child: Gtk.Box {
+                    Gtk.Label {
+                      label: bind template.item as <StringObject>.string;
+                      height-request: 50;
+                      margin-start: 12;
+                      margin-end: 12;
+                    }
+                  };
+                }
+              };
+
+              styles [
+                "boxed-list"
+              ]
+            }
+          };
+        }
+
+        StackPage {
+          title: _("Add new");
+
+          child: Box {
+            halign: center;
+            orientation: vertical;
+            spacing: 24;
+
+            Box {
+              orientation: vertical;
+
+              Label {
+                label: _("URL");
+                margin-bottom: 12;
+              }
+
+              Entry url {
+                primary-icon-name: "earth-symbolic";
+                input-purpose: url;
+                placeholder-text: "Enter URL here";
+              }
+            }
+
+            Box {
+              orientation: vertical;
+
+              Label {
+                label: _("Description");
+                margin-bottom: 12;
+              }
+
+              Frame {
+                ScrolledWindow {
+                  height-request: 90;
+                  width-request: 600;
+
+                  TextView description {
+                    bottom-margin: 12;
+                    left-margin: 12;
+                    right-margin: 12;
+                    top-margin: 12;
+                    editable: true;
+                    cursor-visible: true;
+                    wrap-mode: char;
+                  }
+                }
+              }
+            }
+
+            Button add {
+              label: "Add bookmark";
+            }
+          };
+        }
+      }
+    }
+  }
+}
+
