@@ -14,7 +14,9 @@ use crate::p2panda::{Client as P2PandaClient, Collection, Document, Meta};
 use crate::workbench;
 
 const NODE_ENDPOINT: &str = "http://localhost:2020/graphql";
-const BOOKMARKS_SCHEMA_ID: &str = "";
+
+const BOOKMARKS_SCHEMA_ID: &str =
+    "bookmarks_002005b6b965fb55d0ec5530a4d4874646b90669eaf72c14fa0c045f8bfaa6c4383f";
 
 #[derive(Deserialize, Clone, Debug)]
 struct BookmarksCollection {
