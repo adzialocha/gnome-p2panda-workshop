@@ -1,3 +1,5 @@
+use std::time::{SystemTime, UNIX_EPOCH};
+
 use adw::prelude::*;
 use anyhow::{anyhow, Result};
 use aquadoggo::{Configuration, LockFile, Node};
@@ -16,7 +18,7 @@ use crate::workbench;
 const NODE_ENDPOINT: &str = "http://localhost:2020/graphql";
 
 const BOOKMARKS_SCHEMA_ID: &str =
-    "bookmarks_002005b6b965fb55d0ec5530a4d4874646b90669eaf72c14fa0c045f8bfaa6c4383f";
+    "bookmarks_0020017dbdd0193158a00a62a9a8e382d1daa7120de5f3243c8b380f9d0f74e7c524";
 
 #[derive(Deserialize, Clone, Debug)]
 struct BookmarksCollection {
@@ -27,6 +29,7 @@ struct BookmarksCollection {
 struct Bookmark {
     pub url: String,
     pub description: String,
+    pub timestamp: u64,
 }
 
 struct Client {
@@ -62,6 +65,7 @@ impl Client {
                         fields {{
                             url
                             description
+                            timestamp
                         }}
                     }}
                 }}
@@ -79,10 +83,19 @@ impl Client {
     }
 
     pub async fn add_bookmark(&self, url: &str, description: &str) -> Result<Document<Bookmark>> {
+        let timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("System time invalid, operation system time configured before UNIX epoch")
+            .as_secs();
+
         let schema_id = SchemaId::new(BOOKMARKS_SCHEMA_ID).unwrap();
 
         let operation = OperationBuilder::new(&schema_id)
-            .fields(&[("url", url.into()), ("description", description.into())])
+            .fields(&[
+                ("url", url.into()),
+                ("description", description.into()),
+                ("timestamp", (timestamp as i64).into()),
+            ])
             .build()?;
 
         let entry_hash = self
@@ -99,6 +112,7 @@ impl Client {
             fields: Bookmark {
                 url: url.to_owned(),
                 description: description.to_owned(),
+                timestamp: timestamp.to_owned(),
             },
         };
 
