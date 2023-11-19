@@ -220,16 +220,31 @@ pub fn main() {
     }
 
     {
+        let bookmarks_list: gtk::ListBox = workbench::builder().object("bookmarks").unwrap();
+
+        let on_get_all_bookmarks = move |bookmarks: Vec<Document<Bookmark>>| {
+            bookmarks_list.remove_all();
+
+            for bookmark in bookmarks {
+                let label = gtk::Label::builder().label(bookmark.fields.url).build();
+                bookmarks_list.append(&label);
+            }
+        };
+
+        let on_add_bookmark = |bookmark: Document<Bookmark>| {
+            println!("{:?}", bookmark);
+        };
+
         let mut receiver = sender.subscribe();
 
         glib::spawn_future_local(async move {
             while let Ok(message) = receiver.recv().await {
                 match message {
                     Message::GetAllBookmarksResponse(bookmarks) => {
-                        println!("{:?}", bookmarks);
+                        on_get_all_bookmarks(bookmarks);
                     }
                     Message::AddBookmarkResponse(bookmark) => {
-                        println!("{:?}", bookmark);
+                        on_add_bookmark(bookmark);
                     }
                     _ => (),
                 }

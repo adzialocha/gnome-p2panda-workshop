@@ -26,11 +26,12 @@ Adw.StatusPage {
           title: _("Bookmarks");
 
           child: Box {
-            orientation: horizontal;
+            orientation: vertical;
             halign: center;
 
             Box {
               halign: center;
+              margin-bottom: 24;
 
               styles [
                 "linked"
@@ -46,23 +47,9 @@ Adw.StatusPage {
               }
             }
 
-            ListView bookmarks {
+            ListBox bookmarks {
               hexpand: true;
               valign: start;
-              enable-rubberband: true;
-
-              factory: BuilderListItemFactory {
-                template ListItem {
-                  child: Gtk.Box {
-                    Gtk.Label {
-                      label: bind template.item as <StringObject>.string;
-                      height-request: 50;
-                      margin-start: 12;
-                      margin-end: 12;
-                    }
-                  };
-                }
-              };
 
               styles [
                 "boxed-list"
