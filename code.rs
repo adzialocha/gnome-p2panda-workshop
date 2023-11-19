@@ -55,7 +55,10 @@ impl Client {
         let query = format!(
             r#"
             {{
-                bookmarks: all_{BOOKMARKS_SCHEMA_ID} {{
+                bookmarks: all_{BOOKMARKS_SCHEMA_ID}(
+                  orderBy: "timestamp",
+                  orderDirection: DESC,
+                ) {{
                     documents {{
                         meta {{
                             documentId
