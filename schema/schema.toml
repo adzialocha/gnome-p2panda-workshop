@@ -1,6 +1,7 @@
 [bookmarks]
-description = "Write about your schema here"
+description = "Store your favorite bookmarks"
 
 [bookmarks.fields]
-url = { type = "str" }
 description = { type = "str" }
+timestamp = { type = "int" }
+url = { type = "str" }
