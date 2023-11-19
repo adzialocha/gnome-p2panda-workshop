@@ -20,12 +20,17 @@ const NODE_ENDPOINT: &str = "http://localhost:2020/graphql";
 const BOOKMARKS_SCHEMA_ID: &str =
     "bookmarks_0020017dbdd0193158a00a62a9a8e382d1daa7120de5f3243c8b380f9d0f74e7c524";
 
+type SearchQuery = String;
+type Url = String;
+type Description = String;
+
 #[derive(Deserialize, Clone, Debug)]
 struct BookmarksCollection {
     pub bookmarks: Collection<Bookmark>,
 }
 
 #[derive(Deserialize, Clone, Debug)]
+#[allow(unused)]
 struct Bookmark {
     pub url: String,
     pub description: String,
@@ -51,13 +56,30 @@ impl Client {
         }
     }
 
-    pub async fn all_bookmarks(&self) -> Result<Vec<Document<Bookmark>>> {
+    pub async fn all_bookmarks(
+        &self,
+        query: Option<SearchQuery>,
+    ) -> Result<Vec<Document<Bookmark>>> {
+        let filter = match query {
+            Some(query) => {
+                format!(
+                    r#"
+                    filter: {{
+                        description: {{ contains: "{query}" }}
+                    }}
+                    "#
+                )
+            }
+            None => "".to_string(),
+        };
+
         let query = format!(
             r#"
             {{
                 bookmarks: all_{BOOKMARKS_SCHEMA_ID}(
                   orderBy: "timestamp",
                   orderDirection: DESC,
+                  {filter}
                 ) {{
                     documents {{
                         meta {{
@@ -123,13 +145,9 @@ impl Client {
     }
 }
 
-type Url = String;
-
-type Description = String;
-
 #[derive(Clone, Debug)]
 enum Message {
-    GetAllBookmarksRequest,
+    GetAllBookmarksRequest(Option<SearchQuery>),
     GetAllBookmarksResponse(Vec<Document<Bookmark>>),
     AddBookmarkRequest(Url, Description),
     AddBookmarkResponse(Document<Bookmark>),
@@ -166,8 +184,9 @@ pub fn main() {
             rt.block_on(async move {
                 while let Ok(message) = receiver.recv().await {
                     match message {
-                        Message::GetAllBookmarksRequest => {
-                            let bookmarks = client.all_bookmarks().await.unwrap();
+                        Message::GetAllBookmarksRequest(query) => {
+                            let bookmarks = client.all_bookmarks(query).await.unwrap();
+
                             sender
                                 .send(Message::GetAllBookmarksResponse(bookmarks))
                                 .unwrap();
@@ -188,7 +207,8 @@ pub fn main() {
         let sender = sender.clone();
 
         refresh_button.connect_clicked(move |_| {
-            sender.send(Message::GetAllBookmarksRequest).unwrap();
+            let query = None;
+            sender.send(Message::GetAllBookmarksRequest(query)).unwrap();
         });
     }
 
