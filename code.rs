@@ -1,6 +1,6 @@
 use adw::prelude::*;
 use anyhow::{anyhow, Result};
-use aquadoggo::{Configuration, Node};
+use aquadoggo::{Configuration, LockFile, Node};
 use gql_client::Client as GraphQLClient;
 use p2panda_rs::identity::KeyPair;
 use p2panda_rs::operation::plain::PlainOperation;
@@ -127,6 +127,11 @@ pub fn main() {
         let key_pair = KeyPair::new();
         let config = Configuration::default();
         let node = rt.block_on(Node::start(key_pair, config));
+
+        let data = include_str!("schema/schema.lock");
+        let lock_file: LockFile = toml::from_str(&data).expect("error parsing schema.lock file");
+        rt.block_on(node.migrate(lock_file))
+            .expect("Schema migration failed");
 
         std::thread::spawn(move || {
             rt.block_on(node.on_exit());

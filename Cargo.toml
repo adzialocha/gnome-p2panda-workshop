@@ -9,15 +9,16 @@ path = "lib.rs"
 
 [dependencies]
 anyhow = "1.0.75"
-aquadoggo = "0.6.0"
+aquadoggo = "0.7.0"
 glib = "0.18.3"
 gql_client = "1.0.7"
 libc = "0.2"
-p2panda-rs = "0.8.0"
+p2panda-rs = "0.8.1"
 rand = "0.8.5"
 serde = { version = "1.0.192", features = ["derive"] }
 soup3 = { version = "0.5.0", features = ["v3_4"] }
 tokio = { version = "1.34.0", features = ["rt-multi-thread"] }
+toml = "0.8.8"
 url = "2.4.0"
 webkit6 = { version = "0.2.0", features = ["v2_42"] }
 
