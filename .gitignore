@@ -1,2 +1,7 @@
 target
 settings
+workbench.vala
+libworkbenchcode.so
+main.ui
+biome.json
+__pycache__
