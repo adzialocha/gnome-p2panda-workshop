@@ -154,6 +154,10 @@ enum Message {
 }
 
 pub fn main() {
+    env_logger::Builder::new()
+        .filter(Some("aquadoggo"), log::LevelFilter::Info)
+        .init();
+
     let (sender, _) = broadcast::channel::<Message>(16);
 
     {
