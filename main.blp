@@ -2,12 +2,11 @@ using Gtk 4.0;
 using Adw 1;
 
 Adw.StatusPage {
-  title: _("Local-first Bookmarking App");
-  description: _("Write something about it!");
+  title: _("Local-First Bookmarks");
   valign: start;
 
   Adw.Clamp {
-    maximum-size: 640;
+    maximum-size: 340;
 
     Box {
       orientation: vertical;
@@ -59,7 +58,7 @@ Adw.StatusPage {
         }
 
         StackPage {
-          title: _("Add new");
+          title: _("Add New");
 
           child: Box {
             halign: center;
@@ -69,15 +68,17 @@ Adw.StatusPage {
             Box {
               orientation: vertical;
 
-              Label {
-                label: _("URL");
-                margin-bottom: 12;
-              }
+              ListBox {
+                selection-mode: none;
 
-              Entry url {
-                primary-icon-name: "earth-symbolic";
-                input-purpose: url;
-                placeholder-text: "Enter URL here";
+                Adw.EntryRow url {
+                  input-purpose: url;
+                  title: "Bookmark URL";
+                }
+
+                styles [
+                  "boxed-list"
+                ]
               }
             }
 
@@ -87,12 +88,13 @@ Adw.StatusPage {
               Label {
                 label: _("Description");
                 margin-bottom: 12;
+                halign: start;
               }
 
               Frame {
                 ScrolledWindow {
                   height-request: 90;
-                  width-request: 600;
+                  width-request: 300;
 
                   TextView description {
                     bottom-margin: 12;
@@ -108,7 +110,12 @@ Adw.StatusPage {
             }
 
             Button add {
-              label: "Add bookmark";
+              label: "Add Bookmark";
+              hexpand: false;
+
+              styles [
+                "pill"
+              ]
             }
           };
         }
