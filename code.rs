@@ -250,7 +250,10 @@ pub fn main() {
             bookmarks_list.remove_all();
 
             for bookmark in bookmarks {
-                let label = gtk::Label::builder().label(bookmark.fields.url).build();
+                let label = gtk::LinkButton::builder()
+                    .label(bookmark.fields.url.clone())
+                    .uri(bookmark.fields.url.clone())
+                    .build();
                 bookmarks_list.append(&label);
             }
         };
