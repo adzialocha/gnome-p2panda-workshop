@@ -6,7 +6,7 @@ Adw.StatusPage {
   valign: start;
 
   Adw.Clamp {
-    maximum-size: 340;
+    maximum-size: 320;
 
     Box {
       orientation: vertical;
@@ -61,12 +61,13 @@ Adw.StatusPage {
           title: _("Add New");
 
           child: Box {
-            halign: center;
+            halign: fill;
             orientation: vertical;
             spacing: 24;
 
             Box {
               orientation: vertical;
+              spacing: 18;
 
               ListBox {
                 selection-mode: none;
@@ -80,38 +81,23 @@ Adw.StatusPage {
                   "boxed-list"
                 ]
               }
-            }
 
-            Box {
-              orientation: vertical;
+              ListBox {
+                selection-mode: none;
 
-              Label {
-                label: _("Description");
-                margin-bottom: 12;
-                halign: start;
-              }
-
-              Frame {
-                ScrolledWindow {
-                  height-request: 90;
-                  width-request: 300;
-
-                  TextView description {
-                    bottom-margin: 12;
-                    left-margin: 12;
-                    right-margin: 12;
-                    top-margin: 12;
-                    editable: true;
-                    cursor-visible: true;
-                    wrap-mode: char;
-                  }
+                Adw.EntryRow description {
+                  title: "Description";
                 }
+
+                styles [
+                  "boxed-list"
+                ]
               }
             }
 
             Button add {
               label: "Add Bookmark";
-              hexpand: false;
+              halign: center;
 
               styles [
                 "pill"
