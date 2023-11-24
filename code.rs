@@ -218,24 +218,21 @@ pub fn main() {
 
     {
         let add_button: gtk::Button = workbench::builder().object("add").unwrap();
-        let url_entry: gtk::Entry = workbench::builder().object("url").unwrap();
-        let description_text_view: gtk::TextView =
-            workbench::builder().object("description").unwrap();
-
+        let url_entry: adw::EntryRow = workbench::builder().object("url").unwrap();
+        let description_entry: adw::EntryRow = workbench::builder().object("description").unwrap();
+        
         let sender = sender.clone();
 
         add_button.connect_clicked(move |_| {
-            let buffer = url_entry.buffer();
-            let url = buffer.text().to_string();
+            let url = url_entry.text().to_string();
             if url.is_empty() {
                 return;
             }
-            buffer.set_text("");
 
-            let buffer = description_text_view.buffer();
-            let (start, end) = buffer.bounds();
-            let description = buffer.text(&start, &end, false).to_string();
-            buffer.set_text("");
+            let description = description_entry.text().to_string();
+            if description.is_empty() {
+                return;
+            }
 
             sender
                 .send(Message::AddBookmarkRequest(url, description))
