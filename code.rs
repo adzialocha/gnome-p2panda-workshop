@@ -240,6 +240,9 @@ pub fn main() {
             sender
                 .send(Message::AddBookmarkRequest(url, description))
                 .unwrap();
+
+            let query = None;
+            sender.send(Message::GetAllBookmarksRequest(query)).unwrap();
         });
     }
 
