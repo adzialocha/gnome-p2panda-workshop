@@ -4,6 +4,7 @@ use adw::prelude::*;
 use anyhow::{anyhow, Result};
 use aquadoggo::{Configuration, LockFile, Node};
 use gql_client::Client as GraphQLClient;
+use gtk::gio;
 use p2panda_rs::identity::KeyPair;
 use p2panda_rs::operation::plain::PlainOperation;
 use p2panda_rs::operation::OperationBuilder;
@@ -164,7 +165,11 @@ pub fn main() {
         let rt = Builder::new_current_thread().enable_all().build().unwrap();
 
         let key_pair = KeyPair::new();
-        let config = Configuration::default();
+        let file_sqlite = gio::File::for_uri(&workbench::resolve("./db.sqlite"));
+        let config = Configuration {
+            database_url: format!("sqlite://{}", file_sqlite.path().unwrap().display()),
+            ..Default::default()
+        };
         let node = rt.block_on(Node::start(key_pair, config));
 
         let data = include_str!("schema/schema.lock");
@@ -223,7 +228,7 @@ pub fn main() {
         let add_button: gtk::Button = workbench::builder().object("add").unwrap();
         let url_entry: adw::EntryRow = workbench::builder().object("url").unwrap();
         let description_entry: adw::EntryRow = workbench::builder().object("description").unwrap();
-        
+
         let sender = sender.clone();
 
         add_button.connect_clicked(move |_| {
