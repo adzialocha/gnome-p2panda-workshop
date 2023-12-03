@@ -206,6 +206,9 @@ pub fn main() {
         });
     }
 
+    let query = None;
+    sender.send(Message::GetAllBookmarksRequest(query)).unwrap();
+
     {
         let refresh_button: gtk::Button = workbench::builder().object("refresh").unwrap();
         let sender = sender.clone();
